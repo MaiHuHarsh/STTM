@@ -61,3 +61,5 @@ class UI():
             send()
         elif client == '2':
             Recv()
+
+UI()
