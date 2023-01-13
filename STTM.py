@@ -58,8 +58,8 @@ class UI():
         print('[1] Send A File\n[2] Recv A File')
         client = input('>> Please Input the numer beside to chose the opration : ')
         if client == '1':
-            send()
+            send(input("Please Inter the Credentials \nIP:"),input("Port:"))
         elif client == '2':
-            Recv()
+            Recv(print("Enter the port ( any number between 2000-3000 ) you want to start a server at : "))
 
 UI()
