@@ -60,6 +60,6 @@ class UI():
         if client == '1':
             send(input("Please Inter the Credentials \nIP:"),input("Port:"))
         elif client == '2':
-            Recv(print("Enter the port ( any number between 2000-3000 ) you want to start a server at : "))
+            Recv(input("Enter the port ( any number between 2000-3000 ) you want to start a server at : "))
 
 UI()
