@@ -1,14 +1,25 @@
-import socket, base64, os, json
+import socket, base64, os, json, datetime
 
+config = {'LOG':'.\\LOG\\'}
 
+class ErrorManagment():
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def LogError(error):
+        with open(config['LOG']+str(datetime.datetime.now().strftime("%w%d%m%Y%H%M%S%f")+'.logfile'),'a+')as LogFile:LogFile.write(str(error))
+        input("There was a error making the request, file has been logged, please said to our support email")    
+        exit()
 class Recv():
     socketServer = socket.socket()
 
-
     def __init__(self,port):
-        if type(port) != int: port = int(port)
+        if type(port) != int: 
+            try:port = int(port)
+            except ValueError: print("Invalid Input");input();exit()
         try: self.socketServer.bind((socket.gethostbyname(socket.gethostname()),port))
-        except Exception: print('>>> There was some error in building server please try again with a different port or try again later');input();exit()
+        except Exception as SocketBingingError: ErrorManagment.LogError(SocketBingingError)
         print(">>> Server is ready to recive <<<")
         print("::> Connetion Information >>> \nIP: {}\nPort: {}".format(socket.gethostbyname(socket.gethostname()), port))
         self.socketServer.listen()
@@ -40,8 +51,10 @@ class send():
         try:self.sock.connect((ip,port))
         except Exception as e: print('Unable to find the reciver\n{}'.format(e));input();exit()
         print('>>SendingFile<<<')
-        self.sock.send(file)
+        self.send(file)
 
+    def SendFile(self,file):
+        self.sock.
 
     def loadFine(self):
         fileToTransfer =  input('>>Select File to tranfer : ').replace('"','')
