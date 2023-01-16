@@ -52,10 +52,7 @@ class send():
         except Exception as e: print('Unable to find the reciver\n{}'.format(e));input();exit()
         print('>>SendingFile<<<')
         self.send(file)
-
-    def SendFile(self,file):
-        pass
-
+        
     def loadFine(self):
         fileToTransfer =  input('>>Select File to tranfer : ').replace('"','')
         if os.path.isfile(fileToTransfer)!=True :print("The File selected was invalid");input();exit
