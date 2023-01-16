@@ -13,7 +13,7 @@ class Send():
             try:port=int(port)
             except ValueError: ErrorManager.ReportError('Invalid Port input', 'The Port number is suppoed to be an Integer');return
         self.ThisPC = socket.socket()
-        self.Configration = (socket.gethostbyaddr(socket.gethostname()),port)
+        self.Configration = (socket.gethostbyname(socket.gethostname()),port)
         self.ThisPC.bind(self.Configration)
     
     def StartAcceptingRequests(self):
@@ -26,14 +26,16 @@ class Send():
         with open(file,'rb')as TragetFileData:FILE['DATA'] = base64.b64encode(TragetFileData.read()).decode()
         FILE['FILENAME']=str(file).split('\\')[::-1][0]
         Package = json.dumps(FILE).encode()
-        if len(Package) >2048:  ErrorManager.ReportWarning("To Large File","The File is To large to be send, our app is not cappable yet")
-        CONFIG = {'SIZE':len(Package)}
+
+        CONFIG = json.dumps({'SIZE':len(Package)}).encode()
+        if len(CONFIG) >2048:  ErrorManager.ReportWarning("To Large File","The File is To large to be send, our app is not cappable yet")
+        
         return Package, CONFIG
     
     def SendFile(self,Package,CONFIG):
         try:
             self.Receiver.sendall(CONFIG)
-            self.Receiver.sendAll(Package)
+            self.Receiver.sendall(Package)
         except Exception as Error:
             ErrorManager.ReportLog(Error,"Shareing the CONFIG and Package")
 
@@ -49,6 +51,19 @@ class Recv():
     
     def RecvFile(self):
         CONFIG = json.loads(self.ThisPC.recv(2048).decode())
+        print('config aagay')
+        rawFile = b''
+        percentageReceved = 0
+        while True:
+            rawFile+= self.ThisPC.recv(2048)
+            try: json.loads(rawFile.decode());break
+            except json.JSONDecodeError: 
+                percentageBuffer = round((len(rawFile)/CONFIG['SIZE'])*100,0)
+                if percentageReceved != percentageBuffer:percentageReceved=percentageBuffer;print(percentageReceved)
+                
+        file= json.loads(rawFile.decode())
+        with open(file["FILENAME"],'wb')as fileRecv:
+            fileRecv.write(base64.b64decode(file["DATA"].encode()))
         
 class ErrorManager():
     
@@ -56,11 +71,9 @@ class ErrorManager():
 
     @staticmethod
     def ReportLog(ErrorMsg,comment):
-        NameOfLogFile = ''.join(list({
-            'NAME':datetime.datetime.now().strftime("%w%d%m%Y%H%M%S%f"),
-            'EXT':'.logfile'}))
+        NameOfLogFile = datetime.datetime.now().strftime("%w%d%m%Y%H%M%S%f")+'.logfile'
         
-        with open(config['LOG']+NameOfLogFile,'a+')as LogFile:LogFile.write(str(ErrorMsg),comment)
+        with open((config['LOG']+NameOfLogFile),'a+')as LogFile: LogFile.write(str(ErrorMsg)+'\n'+comment)
         input('There was an error during the {}, the error has been logged... error id is {}\nHit Entere to continue'.format(comment,ErrorMsg))    
         exit()
     
