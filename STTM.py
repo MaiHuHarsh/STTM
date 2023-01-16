@@ -11,6 +11,7 @@ class ErrorManagment():
         with open(config['LOG']+str(datetime.datetime.now().strftime("%w%d%m%Y%H%M%S%f")+'.logfile'),'a+')as LogFile:LogFile.write(str(error))
         input("There was a error making the request, file has been logged, please said to our support email")    
         exit()
+
 class Recv():
     socketServer = socket.socket()
 
@@ -51,8 +52,8 @@ class send():
         try:self.sock.connect((ip,port))
         except Exception as e: print('Unable to find the reciver\n{}'.format(e));input();exit()
         print('>>SendingFile<<<')
-        self.send(file)
-        
+        self.sock.sendall(file)
+
     def loadFine(self):
         fileToTransfer =  input('>>Select File to tranfer : ').replace('"','')
         if os.path.isfile(fileToTransfer)!=True :print("The File selected was invalid");input();exit
