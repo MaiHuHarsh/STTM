@@ -26,6 +26,7 @@ class Send():
         with open(file,'rb')as TragetFileData:FILE['DATA'] = base64.b64encode(TragetFileData.read()).decode()
         FILE['FILENAME']=str(file).split('\\')[::-1][0]
         Package = json.dumps(FILE).encode()
+        if len(Package) >2048:  ErrorManager.ReportWarning("To Large File","The File is To large to be send, our app is not cappable yet")
         CONFIG = {'SIZE':len(Package)}
         return Package, CONFIG
     
@@ -39,8 +40,16 @@ class Send():
 
 
 class Recv():
-    pass
-
+    def __init__(self,ip,port):
+        self.ThisPC = socket.socket()
+        if type(port) != int: ErrorManager.ReportError('Invalid Port','The port is invalid')
+        try:self.ThisPC.connect((ip,port))
+        except ConnectionRefusedError: ErrorManager.ReportError('Unable to make the connection','Either the info entred was wrong or the reciver is not yet ready please resolve accordingly');return
+        except Exception as e: ErrorManager.ReportLog(e,'Connecting to recevier')
+    
+    def RecvFile(self):
+        CONFIG = json.loads(self.ThisPC.recv(2048).decode())
+        
 class ErrorManager():
     
     def __init__(self):pass
@@ -58,3 +67,7 @@ class ErrorManager():
     @staticmethod
     def ReportError(ErrorHeader,ErrorMsg):
         print('[-] ERROR [-] --> {}\n>>{}'.format(ErrorHeader, ErrorMsg))
+    
+    @staticmethod
+    def ReportWarning(WarningHeadder,WarningMsg):
+        print('[!] ERROR [!] --> {}\n>>{}'.format(WarningHeadder, WarningHeadder))
