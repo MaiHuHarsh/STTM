@@ -38,7 +38,7 @@ class Recv():
         file= json.loads(rawFile.decode())
         with open(file["NAME"],'wb')as fileRecv:
             fileRecv.write(base64.b64decode(file["DATA"].encode()))
-        
+
 
 
 
@@ -54,7 +54,7 @@ class send():
         self.send(file)
 
     def SendFile(self,file):
-        self.sock.
+        pass
 
     def loadFine(self):
         fileToTransfer =  input('>>Select File to tranfer : ').replace('"','')
