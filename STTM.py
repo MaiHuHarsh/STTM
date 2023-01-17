@@ -2,7 +2,8 @@ import datetime
 import socket, os, base64, json
 
 config ={
-        'LOG':'.\\LOG\\'
+        'LOG':'.\\LOG\\',
+        'THREADING':12,
     }
 
 
