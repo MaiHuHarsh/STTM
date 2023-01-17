@@ -44,7 +44,7 @@ class Send():
 class Recv():
     def __init__(self,ip,port):
         self.ThisPC = socket.socket()
-        if type(port) != int: ErrorManager.ReportError('Invalid Port','The port is invalid')
+        if type(port) != int: ErrorManager.ReportError('Invalid Port','The port is invalid');return
         try:self.ThisPC.connect((ip,port))
         except ConnectionRefusedError: ErrorManager.ReportError('Unable to make the connection','Either the info entred was wrong or the reciver is not yet ready please resolve accordingly');return
         except Exception as e: ErrorManager.ReportLog(e,'Connecting to recevier')
